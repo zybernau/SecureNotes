@@ -1,0 +1,72 @@
+﻿<Application
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone" xmlns:SampleData="clr-namespace:Expression.Blend.SampleData.SampleDataSource" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+    x:Class="ForgetME.App"
+    >
+
+    <!--Application Resources-->
+    <Application.Resources>
+    	
+        <ControlTemplate x:Key="mynotesTheme" TargetType="TextBox">
+        	<Grid>
+        		<VisualStateManager.VisualStateGroups>
+        			<VisualStateGroup x:Name="CommonStates">
+        				<VisualState x:Name="Normal"/>
+        				<VisualState x:Name="Disabled"/>
+        				<VisualState x:Name="MouseOver"/>
+        			</VisualStateGroup>
+        			<VisualStateGroup x:Name="ValidationStates">
+        				<VisualState x:Name="Valid"/>
+        				<VisualState x:Name="InvalidFocused"/>
+        			</VisualStateGroup>
+        			<VisualStateGroup x:Name="FocusStates">
+        				<VisualState x:Name="Focused"/>
+        			</VisualStateGroup>
+        		</VisualStateManager.VisualStateGroups>
+        		<TextBox HorizontalAlignment="Left" Height="564" TextWrapping="Wrap" VerticalAlignment="Top" Width="456"/>
+        	</Grid>
+        </ControlTemplate>
+        <ControlTemplate x:Key="myNoteTheme" TargetType="TextBox">
+        	<Grid>
+        		<VisualStateManager.VisualStateGroups>
+        			<VisualStateGroup x:Name="CommonStates">
+        				<VisualState x:Name="Normal"/>
+        				<VisualState x:Name="Disabled"/>
+        				<VisualState x:Name="MouseOver"/>
+        			</VisualStateGroup>
+        			<VisualStateGroup x:Name="ValidationStates">
+        				<VisualState x:Name="Valid"/>
+        				<VisualState x:Name="InvalidFocused"/>
+        			</VisualStateGroup>
+        			<VisualStateGroup x:Name="FocusStates">
+        				<VisualState x:Name="Focused"/>
+        			</VisualStateGroup>
+        		</VisualStateManager.VisualStateGroups>
+        		<TextBox HorizontalAlignment="Left" Height="574" TextWrapping="Wrap" VerticalAlignment="Top" Width="456" Template="{StaticResource mynotesTheme}"/>
+        	</Grid>
+        </ControlTemplate>
+        <Style x:Key="mytextStyle" TargetType="TextBox">
+        	<Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyNormal}"/>
+        	<Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMediumLarge}"/>
+        	<Setter Property="Background" Value="{StaticResource PhoneTextBoxBrush}"/>
+        	<Setter Property="Foreground" Value="{StaticResource PhoneTextBoxForegroundBrush}"/>
+        	<Setter Property="BorderBrush" Value="{StaticResource PhoneTextBoxBrush}"/>
+        	<Setter Property="SelectionBackground" Value="{StaticResource PhoneAccentBrush}"/>
+        	<Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
+        	<Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
+        	<Setter Property="Padding" Value="2"/>
+        	<Setter Property="Template" Value="{StaticResource myNoteTheme}"/>
+        	<Setter Property="CaretBrush" Value="{StaticResource PhoneAccentBrush}"/>
+        </Style>
+    </Application.Resources>
+
+    <Application.ApplicationLifetimeObjects>
+        <!--Required object that handles lifetime events for the application-->
+        <shell:PhoneApplicationService
+            Launching="Application_Launching" Closing="Application_Closing"
+            Activated="Application_Activated" Deactivated="Application_Deactivated" RunningInBackground="Application_RunningInBackground"/>
+    </Application.ApplicationLifetimeObjects>
+
+</Application>
