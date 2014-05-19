@@ -15,19 +15,19 @@ namespace ForgetME
     {
 
 
-        private List<string> _questions = new List<string>
-        {
-            "What is your first phone number?",
-            "Who is your childhood hero?",
-            "Who is your first crush?",
-            "My own secret question ___?"
+        //private List<string> _questions = new List<string>
+        //{
+        //    "What is your first phone number?",
+        //    "Who is your childhood hero?",
+        //    "Who is your first crush?",
+        //    "My own secret question ___?"
 
-        };
+        //};
 
         public ForgetPassword()
         {
             InitializeComponent();
-            PickQuestion.ItemsSource = _questions;
+            PickQuestion.ItemsSource = GlobalSetting._questions;
         }
 
         private void showToast(String title, String message)

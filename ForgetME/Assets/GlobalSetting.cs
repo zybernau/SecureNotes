@@ -20,6 +20,16 @@ namespace ForgetME
 
         public const string imagesDirectoryName = "Images";
 
+
+        public static  List<string> _questions = new List<string>
+        {
+            "What is your first phone number?",
+            "Who is your childhood hero?",
+            "Who is your first crush?",
+            "My own secret question ___?"
+
+        };
+
         //private static volatile Notes localNotes;
 
         ////TODO: create a singleton object for local notes.

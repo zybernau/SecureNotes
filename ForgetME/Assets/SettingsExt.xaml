@@ -21,62 +21,41 @@
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
     <phone:PhoneApplicationPage.Resources>
-        
+
         <DataTemplate x:Key="CorsiDataTemplate">
-        <Grid>
-            <Grid.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
-                    <GradientStop Color="#FF3523FF" Offset="0.25"/>
-                    <GradientStop Color="Black" Offset="1"/>
-                    <GradientStop Color="#FF3523FF" Offset="0.75"/>
-                </LinearGradientBrush>
-            </Grid.Background>
-            <TextBlock TextWrapping="Wrap" Text="{Binding NomeCorso}" FontSize="24" FontFamily="Freestyle Script" TextAlignment="Center"/>
-        </Grid>
-    </DataTemplate>
-        </phone:PhoneApplicationPage.Resources>
+            <Grid>
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black" Offset="0"/>
+                        <GradientStop Color="#FF3523FF" Offset="0.25"/>
+                        <GradientStop Color="Black" Offset="1"/>
+                        <GradientStop Color="#FF3523FF" Offset="0.75"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <TextBlock TextWrapping="Wrap" Text="{Binding NomeCorso}" FontSize="24" FontFamily="Freestyle Script" TextAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
     <Grid x:Name="LayoutRoot">
 
-        <Grid Margin="-10,0,10,0">
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="41,367,0,0" Width="360" Text="Answer:"/>
-            <PasswordBox x:Name="txtSecretAnswer" HorizontalAlignment="Left" Margin="24,399,0,0" VerticalAlignment="Top" Width="388"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Please enter your password" VerticalAlignment="Top" Margin="41,106,0,0" Width="275"/>
-            <PasswordBox x:Name="txtPass" HorizontalAlignment="Left" Margin="24,138,0,0" VerticalAlignment="Top" Width="388"/>
 
-            <toolkit:ListPicker Header="Secret Question:" x:Name="PickQuestion" HorizontalAlignment="Left" Margin="36,275,0,0" VerticalAlignment="Top" Width="365" Height="376" >
-                <toolkit:ListPicker.FullModeItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" Margin="0 24 24 24" TextWrapping="Wrap" Style="{StaticResource PhoneTextTitle2Style}" />
-                    </DataTemplate>
-                </toolkit:ListPicker.FullModeItemTemplate>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="41,367,0,0" Width="360" Text="Answer:"/>
+        <PasswordBox x:Name="txtSecretAnswer" HorizontalAlignment="Left" Margin="24,399,0,0" VerticalAlignment="Top" Width="446"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Please enter your password" VerticalAlignment="Top" Margin="41,151,0,0" Width="275"/>
+        <PasswordBox x:Name="txtPass" HorizontalAlignment="Left" Margin="24,183,0,0" VerticalAlignment="Top" Width="446"/>
 
-
-            </toolkit:ListPicker>
-            <toolkit:Separator HorizontalAlignment="Left" Height="17" Margin="10,215,0,0" VerticalAlignment="Top" Width="470"/>
-            <toolkit:ListPicker
-    Grid.Row="0"
-    x:Name="List1"
-    
-    ItemTemplate="{StaticResource CorsiDataTemplate}"
-    ItemsSource="{Binding PickerData}"
-    SelectedIndex="{Binding PickerSelectedIndex, Mode=TwoWay}"/>
-
-        </Grid>
+        <toolkit:ListPicker Header="Secret Question:" x:Name="PickQuestion" HorizontalAlignment="Left" Margin="36,274,0,0" VerticalAlignment="Top" Width="434" Height="376" >
+            <toolkit:ListPicker.FullModeItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Margin="0 24 24 24" TextWrapping="Wrap" Style="{StaticResource PhoneTextTitle2Style}" />
+                </DataTemplate>
+            </toolkit:ListPicker.FullModeItemTemplate>
 
 
-        <!--Panorama item two-->
-        <!--<phone:PanoramaItem Header="Password Pic." VerticalAlignment="Top" FontSize="20">
-            	<Grid HorizontalAlignment="Left" Height="483" VerticalAlignment="Top" Width="420">
-            		<Button Name="btnSelectPhoto"  Content="Select a image" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="218" Click="btnSelectPhoto_Click_1"/>
-                   
-            		<Button x:Name="btnReset" Content="Reset" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="213,10,0,0" Width="180" Click="btnreest_click"/>
-                    <Image  Stretch="UniformToFill" Name="canImage" Tap="canImage_Tap_1" 
-                            HorizontalAlignment="Left" 
-                            Height="356" Margin="22,81,0,0" 
-                            VerticalAlignment="Top" Width="365"/>
-                </Grid>
-            </phone:PanoramaItem>-->
+        </toolkit:ListPicker>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Settings" VerticalAlignment="Top" Margin="36,22,0,0" Width="413" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="48" Height="71" FontWeight="Bold"/>
+
+
 
     </Grid>
 

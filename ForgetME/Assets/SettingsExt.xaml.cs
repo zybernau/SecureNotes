@@ -46,14 +46,14 @@ namespace ForgetME
         // private keys
         private bool firstTime = false;
 
-        private List<string> _questions = new List<string>
-        {
-            "What is your first phone number?",
-            "Who is your childhood hero?",
-            "Who is your first crush?",
-            "My own secret question ___?"
+        //private List<string> _questions = new List<string>
+        //{
+        //    "What is your first phone number?",
+        //    "Who is your childhood hero?",
+        //    "Who is your first crush?",
+        //    "My own secret question ___?"
 
-        };
+        //};
         public SettingsExt()
         {
             InitializeComponent();
@@ -290,19 +290,16 @@ namespace ForgetME
         {
             get
             {
-                return this._questions;
+                return GlobalSetting._questions;
             }
-            set
-            {
-                this._questions = value;
-            }
+           
         }
 
 
         private int getSelectedIndexValue(String itemString)
         {
-            int indPick=1;
-            foreach (String item in _questions)
+            int indPick=0;
+            foreach (String item in GlobalSetting._questions)
             {
                 
                 if (item.Equals(itemString, StringComparison.CurrentCulture))
@@ -337,7 +334,9 @@ namespace ForgetME
             }
             base.OnNavigatedTo(e);
             // set the drop down
-            PickQuestion.ItemsSource = _questions;
+            PickQuestion.ItemsSource = GlobalSetting._questions;
+            PickQuestion.SelectedIndex = PickerSelectedIndex;
+
         }
         private void btncancel_click(object sender, System.EventArgs e)
         {
