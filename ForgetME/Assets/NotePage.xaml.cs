@@ -30,7 +30,7 @@ namespace ForgetME
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            if (unSaved)
+            if (unSaved && !txtTitle.Text.Equals(""))
             {
                 saveNote();
                 Notes.StatusCallBack = "Saved";
@@ -107,10 +107,20 @@ namespace ForgetME
         #region Events
         private void btndelete(object sender, System.EventArgs e)
         {
-            sett.DeleteNote(txtTitle.Text);
-            showToast("Secure Notes", "Notes Deleted");
-            clearControls();
-            NavigationService.GoBack();
+            if (MessageBox.Show("Are you sure you want to delete the note", "Delete Secure Note", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            {
+                sett.DeleteNote(txtTitle.Text);
+                
+                clearControls();
+                Notes.StatusCallBack = "Deleted";
+                NavigationService.GoBack();
+
+            }
+            else
+            {
+                showToast("Secure Notes", "Nice decision :-)");
+            }
+            
         }
 
         private void btnsave_click(object sender, System.EventArgs e)

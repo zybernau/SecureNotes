@@ -4,6 +4,11 @@
   <App xmlns="" ProductID="{7f9b5d3e-303a-4083-9b5d-bba87d026b0f}" Title="SecureNotes" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="zybernau" Description="A simple, secure way to store your confidential information in your device with device encryption.&#xD;&#xA;" Publisher="SecureNotes" PublisherID="{fa85f38f-6a43-4ef0-bac6-9227ba37e90e}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
+      <Capability Name="ID_CAP_NETWORKING" />
+      <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
+      <Capability Name="ID_CAP_SENSORS" />
+      <Capability Name="ID_CAP_MEDIALIB_AUDIO" />
+      <Capability Name="ID_CAP_MEDIALIB_PLAYBACK" />
     </Capabilities>
     <Tasks>
       <DefaultTask Name="_default" NavigationPage="MainPage.xaml" />

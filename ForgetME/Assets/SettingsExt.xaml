@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:live="clr-namespace:Microsoft.Live.Controls;assembly=Microsoft.Live.Controls"
     x:Class="ForgetME.SettingsExt"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -55,6 +56,7 @@
         </toolkit:ListPicker>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Settings" VerticalAlignment="Top" Margin="36,22,0,0" Width="413" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="48" Height="71" FontWeight="Bold"/>
 
+        <live:SignInButton Name ="signinButton1"  ClientId="000000004011F85D" Scopes="wl.signin wl.basic wl.skydrive wl.skydrive_update wl.offline_access" Height="100" VerticalAlignment="Top" Margin="24,487,244,0" SessionChanged="SignInButton_SessionChanged" ></live:SignInButton>
 
 
     </Grid>

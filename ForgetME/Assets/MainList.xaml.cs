@@ -64,9 +64,9 @@ namespace ForgetME
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             
-            if (Notes.StatusCallBack == "Saved")
+            if (Notes.StatusCallBack != "")
             {
-                showToast("Secure Notes", "Notes Saved");
+                showToast("Secure Notes", "Notes " + Notes.StatusCallBack);
                 // clear the state, once showed. :)
                 Notes.StatusCallBack = "";
             }

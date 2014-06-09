@@ -20,8 +20,8 @@ namespace ForgetME
 
         private readonly object _readLock = new object();
         public static string StatusCallBack = "";
-        private const string NotesDirectoryName = "Notes";
-        private const string NotesDirectoryFormatedName = "/Notes/";
+        public const string NotesDirectoryName = "Notes";
+        public const string NotesDirectoryFormatedName = "/Notes/";
         private NoteSec notesSec;
         // single ton instance.
         public static Notes Instance
@@ -113,6 +113,8 @@ namespace ForgetME
 
             return valueChanged;
         }
+
+      
 
         /// <summary>
         /// Get the current value of the setting, or if it is not found, set the 

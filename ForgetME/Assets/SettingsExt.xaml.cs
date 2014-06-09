@@ -13,6 +13,9 @@ using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using System.IO;
+using Microsoft.Live;
+using System.Threading.Tasks;
+using System.Threading;
 namespace ForgetME
 {
     public partial class SettingsExt : PhoneApplicationPage
@@ -22,6 +25,9 @@ namespace ForgetME
         IsolatedStorageSettings settings;
         PhotoChooserTask photoChooser;
         NoteSec noteSec;
+
+        // live sdk connect session.
+        LiveConnectSession _currentSession;
 
         // keys and default
         const string PasswordSettingKeyName = "PasswordSetting";
@@ -292,16 +298,16 @@ namespace ForgetME
             {
                 return GlobalSetting._questions;
             }
-           
+
         }
 
 
         private int getSelectedIndexValue(String itemString)
         {
-            int indPick=0;
+            int indPick = 0;
             foreach (String item in GlobalSetting._questions)
             {
-                
+
                 if (item.Equals(itemString, StringComparison.CurrentCulture))
                 {
                     break;
@@ -315,7 +321,7 @@ namespace ForgetME
             try
             {
 
-                
+
                 // set the default sdettings
                 if (!FirstUse)
                 {
@@ -449,5 +455,214 @@ namespace ForgetME
         {
             NavigationService.Navigate((new Uri("/Assets/PhotoPassword.xaml", UriKind.RelativeOrAbsolute)));
         }
+
+        #region onedrive sync
+
+        /**
+         * 1. Read the IDs from the id file.
+         * 2. match it with current system, there is no need to sync from the one drive, as there is going to be onie way comunuication.
+         * 3. add the updated ids to the sync folder.
+         * 4. 
+         * lets have this way, file name be the key name and the contents of the file will be the part, just copy the files to sync folder if it doesn't exists there, then copy all 
+         * the files from the sync folder to the notes folder so that it is synced here as well.
+         * */
+        private async void SignInButton_SessionChanged(object sender, Microsoft.Live.Controls.LiveConnectSessionChangedEventArgs e)
+        {
+            if (e.Status == Microsoft.Live.LiveConnectSessionStatus.Connected)
+            {
+                _currentSession = e.Session;
+                var coreContent = await CreateRootFolder(_currentSession);
+                //get contents
+                var res = GetFolderContents(_currentSession, coreContent);
+                syncContents(_currentSession, coreContent);
+            }
+
+        }
+
+
+        private async static void syncContents(LiveConnectSession session, string folderId)
+        {
+            // get the notes. instance
+            ICollection keyNotes = Notes.Instance.GetKeys();
+
+            IsolatedStorageFile isoStore;
+            IsolatedStorageSettings noteKeys;
+            noteKeys = IsolatedStorageSettings.ApplicationSettings;
+            LiveConnectClient client = new LiveConnectClient(session);
+            // LiveOperationResult result = await client.GetAsync(folderId + "/files");
+            String fileNameOnly = string.Empty;
+
+            try
+            {
+                // check if it is first time to sync down the notes, if some exists.
+                //FirstUse
+                if ((bool)noteKeys[FirstTimeUseKeyName] )
+                {
+
+
+                    LiveOperationResult operationResult = await client.GetAsync(folderId + "/files");
+                    dynamic result = operationResult.Result;
+                    if (result.data == null)
+                    {
+
+                    }
+                    else
+                    {
+                        dynamic items = result.data;
+
+                        foreach (dynamic item in items)
+                        {
+                            SkyDriveEntity entity = new SkyDriveEntity();
+
+                            IDictionary<string, object> dictItem = (IDictionary<string, object>)item;
+
+
+                            LiveDownloadOperationResult downloadOperationResult =
+                        await client.DownloadAsync(dictItem["id"].ToString() + "/content");
+
+                            Stream fileContent = downloadOperationResult.Stream;
+                            fileNameOnly = dictItem["name"].ToString().Substring(0, dictItem["name"].ToString().LastIndexOf('.'));
+                            noteKeys.Add(fileNameOnly, "");
+
+                            SaveToStorage(fileContent, dictItem["name"].ToString());
+
+                        }
+                    }
+                }
+            }
+            catch (LiveConnectException e)
+            {
+                Console.WriteLine(e.Message);
+
+            }
+            try
+            {
+
+                foreach (var noteKey in keyNotes)
+                {
+                    using (isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        using (var stream = new IsolatedStorageFileStream("/Notes/" + noteKey, FileMode.Open, FileAccess.Read, isoStore))
+                        {
+                            LiveOperationResult operationResult = await client.UploadAsync(folderId + "/", noteKey.ToString() , stream, OverwriteOption.Overwrite);
+                        }
+                    }
+                }
+            }
+            catch (FileNotFoundException fnfex)
+            {
+                // file not found
+                Console.WriteLine(fnfex.Message);
+            }
+            catch (Exception ex)
+            {
+                // file not found
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+        public async static Task<List<SkyDriveEntity>> GetFolderContents(LiveConnectSession session, string folderId)
+        {
+            List<SkyDriveEntity> data = new List<SkyDriveEntity>();
+
+
+
+
+            try
+            {
+                LiveConnectClient client = new LiveConnectClient(session);
+                LiveOperationResult result = await client.GetAsync(folderId + "/files");
+
+                List<object> container = (List<object>)result.Result["data"];
+
+                foreach (var item in container)
+                {
+                    SkyDriveEntity entity = new SkyDriveEntity();
+
+                    IDictionary<string, object> dictItem = (IDictionary<string, object>)item;
+                    string type = dictItem["type"].ToString();
+                    entity.IsFolder = type == "folder" || type == "album" ? true : false;
+                    entity.ID = dictItem["id"].ToString();
+                    entity.Name = dictItem["name"].ToString();
+
+                    data.Add(entity);
+                }
+
+
+
+
+                // 
+
+
+                return data;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static void SaveToStorage(Stream file, String fileName)
+        {
+            using (IsolatedStorageFile myStore = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                using (var isoFileStream = new IsolatedStorageFileStream("/Notes/" + fileName, FileMode.OpenOrCreate, myStore))
+                {
+                    using (file)
+                    {
+                        long length = file.Length;
+                        byte[] buffer = new byte[length];
+
+                        int readLength = file.Read(buffer, 0, (int)length);
+
+                        isoFileStream.Write(buffer, 0, readLength);
+                    }
+                }
+
+
+            }
+        }
+
+        public async static Task<string> CreateRootFolder(LiveConnectSession session)
+        {
+            string folderId = string.Empty;
+            try
+            {
+                var data = await GetFolderContents(session, "me/skydrive");
+
+                if (data != null)
+                {
+                    var targetRootFolder = (from c in data where c.IsFolder && c.Name == "SYNC_SECURE_NOTES" select c).FirstOrDefault();
+
+                    if (targetRootFolder == null)
+                    {
+                        LiveConnectClient client = new LiveConnectClient(session);
+                        LiveOperationResult result = await client.PostAsync("me/skydrive", "{\"name\":\"SYNC_SECURE_NOTES\",\"description\":\"SYNCED FOLDER\"}");
+                        folderId = result.Result["id"].ToString();
+                    }
+                    else
+                    {
+                        folderId = targetRootFolder.ID;
+                    }
+                }
+
+                return folderId;
+            }
+            catch
+            {
+                return folderId;
+            }
+        }
+
+
+        #endregion
+    }
+
+    public class SkyDriveEntity
+    {
+        public string Name { get; set; }
+        public string ID { get; set; }
+        public bool IsFolder { get; set; }
     }
 }

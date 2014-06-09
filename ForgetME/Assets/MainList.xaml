@@ -55,7 +55,7 @@
     <phone:PhoneApplicationPage.ApplicationBar>
 		<shell:ApplicationBar>
 			<shell:ApplicationBarIconButton x:Name="btnAddNote" IconUri="/Assets/AppBar/add.png" Text="Add" Click="btnAddNote_click"/>
-			<shell:ApplicationBarIconButton x:Name="btnSettings" IconUri="/Assets/AppBar/feature.settings.png" Text="Settings" Click="btnSettings_click"/>
+			<shell:ApplicationBarIconButton x:Name="btnSettings" IconUri="/Assets/AppBar/feature.settings.png" Text="Settings/Sync" Click="btnSettings_click"/>
 			
 		</shell:ApplicationBar>
 	</phone:PhoneApplicationPage.ApplicationBar>
@@ -83,6 +83,7 @@
                     GridCellSize="150,150"
                     ItemTemplate="{StaticResource NoteDataTemp}"
                     />
+            
         </Grid>
     </Grid>
 
