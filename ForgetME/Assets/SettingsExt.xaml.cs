@@ -16,6 +16,7 @@ using System.IO;
 using Microsoft.Live;
 using System.Threading.Tasks;
 using System.Threading;
+using Coding4Fun.Toolkit.Controls;
 namespace ForgetME
 {
     public partial class SettingsExt : PhoneApplicationPage
@@ -468,17 +469,37 @@ namespace ForgetME
          * */
         private async void SignInButton_SessionChanged(object sender, Microsoft.Live.Controls.LiveConnectSessionChangedEventArgs e)
         {
-            if (e.Status == Microsoft.Live.LiveConnectSessionStatus.Connected)
+            try
             {
-                _currentSession = e.Session;
-                var coreContent = await CreateRootFolder(_currentSession);
-                //get contents
-                var res = GetFolderContents(_currentSession, coreContent);
-                syncContents(_currentSession, coreContent);
+
+
+                if (e.Status == Microsoft.Live.LiveConnectSessionStatus.Connected)
+                {
+                    _currentSession = e.Session;
+                    var coreContent = await CreateRootFolder(_currentSession);
+                    //get contents
+                    var res = GetFolderContents(_currentSession, coreContent);
+                    syncContents(_currentSession, coreContent);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                showToast("Error", ex.Message);
             }
 
         }
 
+        private void showToast(String title, String message)
+        {
+            ToastPrompt toast = new ToastPrompt();
+            toast.Title = title;
+            toast.Message = message;
+            //toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.RelativeOrAbsolute));
+
+            //toast.Completed += toast_Completed;
+            toast.Show();
+        }
 
         private async static void syncContents(LiveConnectSession session, string folderId)
         {
@@ -496,7 +517,7 @@ namespace ForgetME
             {
                 // check if it is first time to sync down the notes, if some exists.
                 //FirstUse
-                if ((bool)noteKeys[FirstTimeUseKeyName] )
+                if ((bool)noteKeys[FirstTimeUseKeyName])
                 {
 
 
@@ -532,8 +553,13 @@ namespace ForgetME
             }
             catch (LiveConnectException e)
             {
-                Console.WriteLine(e.Message);
+                //Console.WriteLine(e.Message);
+                throw e;
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
             try
             {
@@ -544,7 +570,7 @@ namespace ForgetME
                     {
                         using (var stream = new IsolatedStorageFileStream("/Notes/" + noteKey, FileMode.Open, FileAccess.Read, isoStore))
                         {
-                            LiveOperationResult operationResult = await client.UploadAsync(folderId + "/", noteKey.ToString() , stream, OverwriteOption.Overwrite);
+                            LiveOperationResult operationResult = await client.UploadAsync(folderId + "/", noteKey.ToString(), stream, OverwriteOption.Overwrite);
                         }
                     }
                 }
@@ -552,12 +578,15 @@ namespace ForgetME
             catch (FileNotFoundException fnfex)
             {
                 // file not found
-                Console.WriteLine(fnfex.Message);
+                //Console.WriteLine(fnfex.Message);
+                throw new Exception("Unable to upload the file.");
+                // swalow the error.
             }
             catch (Exception ex)
             {
                 // file not found
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.Message);
+                throw new Exception("Unable to upload the file. ");
             }
 
         }

@@ -76,45 +76,57 @@ namespace ForgetME
         public bool AddOrUpdateValue(string Key, Object value)
         {
             bool valueChanged = false;
-
-            // If the key exists
-            if (!noteKeys.Contains(Key))
+            try
             {
-                noteKeys.Add(Key, "");
-            }
 
-            // If the value has changed
-            if (noteKeys[Key] != value)
-            {
-                // Store the new value
-                using (isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+
+                // If the key exists
+                if (!noteKeys.Contains(Key))
                 {
-                    isoStore.CreateFile(NotesDirectoryFormatedName + Key + ".txt").Dispose();
-                    // encrypt the value before you save.
-                    byte[] encs = notesSec.EncryptString(value.ToString());
-                    lock (_readLock)
-                    {
-                        using (var isoStream = new IsolatedStorageFileStream(NotesDirectoryFormatedName + Key + ".txt", FileMode.Open, FileAccess.Write, isoStore))
-                        {
-                            isoStream.Seek(0, SeekOrigin.Begin);
-                            int offset = 0;
-                            int total = encs.Length;
-                            isoStream.Write(encs, offset, total - offset);
-                            isoStream.Flush();
-                        }
-                    }
-
-
+                    noteKeys.Add(Key, "");
                 }
-                noteKeys[Key] = "";
-                Save();
-                valueChanged = true;
-            }
 
+                // If the value has changed
+                if (noteKeys[Key] != value)
+                {
+                    // Store the new value
+                    using (isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        isoStore.CreateFile(NotesDirectoryFormatedName + Key + ".txt").Dispose();
+                        // encrypt the value before you save.
+                        byte[] encs = notesSec.EncryptString(value.ToString());
+                        lock (_readLock)
+                        {
+                            using (var isoStream = new IsolatedStorageFileStream(NotesDirectoryFormatedName + Key + ".txt", FileMode.Open, FileAccess.Write, isoStore))
+                            {
+                                isoStream.Seek(0, SeekOrigin.Begin);
+                                int offset = 0;
+                                int total = encs.Length;
+                                isoStream.Write(encs, offset, total - offset);
+                                isoStream.Flush();
+                            }
+                        }
+
+
+                    }
+                    noteKeys[Key] = "";
+                    Save();
+                    valueChanged = true;
+                }
+            }
+            catch (IsolatedStorageException isoex)
+            {
+                throw new Exception("Unable to get the storage, Try again");
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
             return valueChanged;
         }
 
-      
+
 
         /// <summary>
         /// Get the current value of the setting, or if it is not found, set the 
@@ -155,8 +167,17 @@ namespace ForgetME
         public bool SetNote(String key, String value)
         {
             bool Note = false;
-            Note = AddOrUpdateValue(key, value);
-            
+            try
+            {
+
+                Note = AddOrUpdateValue(key, value);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
             return Note;
         }
         public bool DeleteNote(String key)
@@ -238,7 +259,7 @@ namespace ForgetME
                 {
                     isoStore.DeleteFile(NotesDirectoryFormatedName + key + ".txt");
                 }
-                
+
             }
             Save();
             return true;

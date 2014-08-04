@@ -30,12 +30,21 @@ namespace ForgetME
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            if (unSaved && !txtTitle.Text.Equals(""))
+            try
             {
-                saveNote();
-                Notes.StatusCallBack = "Saved";
+                if (unSaved && !txtTitle.Text.Equals(""))
+                {
+                    saveNote();
+                    Notes.StatusCallBack = "Saved";
+                }
+                clearControls();
+
             }
-            clearControls();
+            catch (Exception ex)
+            {
+
+                showToast("Error", ex.Message);
+            }
             base.OnNavigatedFrom(e);
         }
 
@@ -87,9 +96,17 @@ namespace ForgetME
 
         private void saveNote()
         {
-            if (txtTitle.Text.Trim() != "")
+            try
             {
-                sett.SetNote(txtTitle.Text.Trim(), txtNote.Text);
+                if (txtTitle.Text.Trim() != "")
+                {
+                    sett.SetNote(txtTitle.Text.Trim(), txtNote.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
 
 
@@ -110,7 +127,7 @@ namespace ForgetME
             if (MessageBox.Show("Are you sure you want to delete the note", "Delete Secure Note", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
                 sett.DeleteNote(txtTitle.Text);
-                
+
                 clearControls();
                 Notes.StatusCallBack = "Deleted";
                 NavigationService.GoBack();
@@ -120,22 +137,30 @@ namespace ForgetME
             {
                 showToast("Secure Notes", "Nice decision :-)");
             }
-            
+
         }
 
         private void btnsave_click(object sender, System.EventArgs e)
         {
-            if (txtTitle.Text.Trim() == "")
+            try
             {
-                // show error notification
-                showToast("Secure Notes", "Please enter Note title");
-                return;
+                if (txtTitle.Text.Trim() == "")
+                {
+                    // show error notification
+                    showToast("Secure Notes", "Please enter Note title");
+                    return;
+                }
+                saveNote();
+                //NavigationContext.QueryString.Add("Saved", "true");
+                Notes.StatusCallBack = "Saved";
+
+                NavigationService.GoBack();
             }
-            saveNote();
-            //NavigationContext.QueryString.Add("Saved", "true");
-            Notes.StatusCallBack = "Saved";
-            NavigationService.GoBack();
-         //NavigationService.Navigate((new Uri("/Assets/MainPage.xaml?Saved=true", UriKind.RelativeOrAbsolute)));
+            catch (Exception ex)
+            {
+                showToast("Error", ex.Message);
+            }
+            //NavigationService.Navigate((new Uri("/Assets/MainPage.xaml?Saved=true", UriKind.RelativeOrAbsolute)));
         }
 
         private void btnback_click(object sender, System.EventArgs e)
@@ -159,13 +184,20 @@ namespace ForgetME
 
         private void PhoneApplicationPage_BackKeyPress_1(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = true;
-            if (unSaved)
+            try
             {
-                saveNote();
-                Notes.StatusCallBack = "Saved";
+                e.Cancel = true;
+                if (unSaved)
+                {
+                    saveNote();
+                    Notes.StatusCallBack = "Saved";
+                }
+                NavigationService.GoBack();
             }
-            NavigationService.GoBack();
+            catch (Exception ex)
+            {
+                showToast("Error", ex.Message);
+            }
             //NavigationService.Navigate((new Uri("/Assets/MainPage.xaml?Saved=true", UriKind.RelativeOrAbsolute)));
 
         }
